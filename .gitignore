@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# macOS
+.DS_Store
+
+# Optional: model artifacts (uncomment if you DON'T want to push them)
+# artifacts/
+# *.joblib
