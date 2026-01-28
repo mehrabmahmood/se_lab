@@ -14,10 +14,10 @@
         class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-800 p-5 text-white shadow-lg"
       >
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <!-- Left: location + temp -->
+          <!-- Left: icon + main values -->
           <div class="flex items-center gap-4">
-            <!-- icon -->
             <div class="grid h-14 w-14 place-items-center rounded-full bg-emerald-900/50 ring-1 ring-white/10">
+              <!-- sun icon -->
               <svg viewBox="0 0 64 64" class="h-10 w-10" fill="none" aria-hidden="true">
                 <circle cx="32" cy="32" r="14" fill="#FBBF24" />
                 <g stroke="#FCD34D" stroke-width="4" stroke-linecap="round">
@@ -34,7 +34,7 @@
             </div>
 
             <div class="leading-tight">
-              <div id="wxCity" class="text-lg font-semibold opacity-95">Loading location…</div>
+              <div id="wxCity" class="text-lg font-semibold opacity-95">Weather unavailable</div>
 
               <div class="flex items-end gap-2">
                 <div id="wxTemp" class="text-5xl font-bold tracking-tight">--</div>
@@ -53,37 +53,39 @@
                 <span>Rain: <span id="wxRain">--</span> mm</span>
               </div>
 
-              <div id="wxNote" class="mt-1 text-xs text-white/60"></div>
+              <div id="wxNote" class="mt-2 text-xs text-white/60">
+                Could not load weather. Check internet and press Refresh.
+              </div>
             </div>
           </div>
 
-          <!-- Right: chart + tabs (kept as-is) -->
+          <!-- Right: tabs + mini chart + refresh -->
           <div class="w-full lg:max-w-[640px]">
             <div class="flex items-center gap-4">
               <div class="flex items-center gap-3 text-sm">
-                <button class="relative font-semibold text-white">
+                <button class="relative font-semibold text-white" type="button">
                   Temperature
                   <span class="absolute -bottom-2 left-0 h-0.5 w-full rounded bg-amber-300"></span>
                 </button>
-                <button class="text-white/65 hover:text-white/85">Precipitation</button>
+                <button class="text-white/65 hover:text-white/85" type="button">Precipitation</button>
               </div>
 
               <button
                 id="wxRefresh"
-                class="ml-auto rounded-lg bg-white/10 px-3 py-2 text-xs font-semibold text-white/90 ring-1 ring-white/10 hover:bg-white/15"
+                class="ml-auto rounded-lg bg-white/10 px-4 py-2 text-xs font-semibold text-white/90 ring-1 ring-white/10 hover:bg-white/15"
                 type="button"
-                title="Refresh weather"
+                title="Refresh"
               >
                 Refresh
               </button>
             </div>
 
-            <!-- Static placeholder chart -->
             <div class="mt-4 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
               <div class="flex justify-between text-xs text-white/70">
                 <span>5 PM</span><span>8 PM</span><span>11 AM</span><span>11 AM</span><span>1 AM</span><span>2 PM</span>
               </div>
 
+              <!-- static mini chart (keeps old look) -->
               <div class="mt-2">
                 <svg viewBox="0 0 600 120" class="h-20 w-full" aria-hidden="true">
                   <path d="M10 95 H590" stroke="rgba(255,255,255,0.12)" stroke-width="2" />
@@ -128,11 +130,11 @@
           </div>
 
           <div class="mt-4 overflow-hidden rounded-2xl ring-1 ring-slate-200">
+            <!-- keep old hero block look; if you have image.webp it will show, else gradient -->
             <div class="relative h-40 bg-[url('./image.webp')] bg-cover bg-center">
-              <div class="absolute inset-0 bg-emerald-950/35"></div>
-              <div class="absolute inset-0 bg-gradient-to-r from-emerald-950/40 via-emerald-950/10 to-transparent"></div>
+              <div class="absolute inset-0 bg-emerald-950/25"></div>
 
-              <!-- BIG CARD (dynamic) -->
+              <!-- BIG CARD -->
               <div
                 class="absolute left-4 top-4 flex items-start gap-4 rounded-xl bg-emerald-950/85 px-4 py-3 text-white shadow-xl ring-1 ring-white/10"
               >
@@ -152,7 +154,7 @@
           </div>
 
           <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <!-- SMALL CARD 1 (dynamic) -->
+            <!-- SMALL CARD 1 -->
             <div class="rounded-xl bg-emerald-950 p-4 text-white shadow-sm ring-1 ring-emerald-900/40">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-semibold leading-tight">
@@ -166,7 +168,7 @@
               <div id="risk2Note" class="mt-2 text-sm text-white/75">Humid weather</div>
             </div>
 
-            <!-- SMALL CARD 2 (dynamic) -->
+            <!-- SMALL CARD 2 -->
             <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-semibold leading-tight text-emerald-900">
@@ -202,21 +204,85 @@
               </svg>
             </div>
           </div>
+
+          <!-- optional status line (doesn't change old behavior) -->
+          <div id="modelStatus" class="mt-3 text-xs text-slate-500"></div>
         </section>
 
-        <!-- RIGHT: EXPLANATION & ACTIONS -->
+        <!-- RIGHT: EXPLANATION & ACTIONS (WITH LLM CHAT) -->
         <section class="rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-200">
           <h2 class="text-xl font-semibold text-emerald-900">Explanation &amp; Actions</h2>
-          <p class="mt-4 text-sm text-slate-600">
-            (We’ll connect this to the ML model later.)
-          </p>
+
+          <!-- Chat panel -->
+          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="text-sm font-semibold text-slate-700">Ask CropWise Assistant (LLM)</div>
+                <div class="text-xs text-slate-500">Uses Ollama locally via your backend</div>
+              </div>
+
+              <span id="llmPill" class="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">
+                LLM: ready
+              </span>
+            </div>
+
+            <div id="chatBox" class="mt-3 h-64 overflow-y-auto rounded-lg bg-white p-3 ring-1 ring-slate-200">
+              <div class="text-sm text-slate-500">
+                Ask about the predicted diseases, why the risk is high, and what actions to take.
+              </div>
+            </div>
+
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button class="quickBtn rounded-lg bg-white px-3 py-2 text-xs font-semibold ring-1 ring-slate-200 hover:bg-slate-100"
+                data-q="Explain why today's weather increases disease risk.">
+                Why risk is high?
+              </button>
+
+              <button class="quickBtn rounded-lg bg-white px-3 py-2 text-xs font-semibold ring-1 ring-slate-200 hover:bg-slate-100"
+                data-q="What prevention actions should I take in the next 48 hours?">
+                Prevention steps
+              </button>
+
+              <button class="quickBtn rounded-lg bg-white px-3 py-2 text-xs font-semibold ring-1 ring-slate-200 hover:bg-slate-100"
+                data-q="What symptoms should I check in the field to confirm the disease?">
+                Symptoms to check
+              </button>
+            </div>
+
+            <div class="mt-3 flex gap-2">
+              <input
+                id="chatInput"
+                type="text"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-400"
+                placeholder="Ask: How to prevent Rice Blast?"
+              />
+              <button
+                id="sendBtn"
+                class="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
+                type="button"
+              >
+                Send
+              </button>
+            </div>
+
+            <div class="mt-2 text-xs text-slate-500">
+              Setup (once): <code>ollama pull phi3</code> · run: <code>ollama serve</code>
+            </div>
+
+            <div id="llmStatus" class="mt-2 text-xs text-slate-500"></div>
+          </div>
         </section>
       </main>
     </div>
 
-    <!-- ✅ LIVE WEATHER + ✅ MODEL CALL -->
     <script>
+      // ===============================
+      // Existing functionality: WEATHER + PREDICT
+      // ===============================
       const MODEL_API = "http://127.0.0.1:8000/predict";
+      const EXPLAIN_API = "http://127.0.0.1:8000/explain";
+
+      // fallback coords (Dhaka)
       const DEFAULT_COORDS = { lat: 23.8103, lon: 90.4125, label: "Dhaka (default)" };
 
       const el = {
@@ -229,7 +295,26 @@
         rain: document.getElementById("wxRain"),
         note: document.getElementById("wxNote"),
         refresh: document.getElementById("wxRefresh"),
+        modelStatus: document.getElementById("modelStatus"),
+
+        // LLM
+        chatBox: document.getElementById("chatBox"),
+        chatInput: document.getElementById("chatInput"),
+        sendBtn: document.getElementById("sendBtn"),
+        llmStatus: document.getElementById("llmStatus"),
+        llmPill: document.getElementById("llmPill"),
       };
+
+      function dayShortFromDate(d) {
+        const map = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+        return map[d.getDay()];
+      }
+
+      function formatWhen(dateObj) {
+        const day = dateObj.toLocaleDateString(undefined, { weekday: "long" });
+        const time = dateObj.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+        return `${day} · ${time}`;
+      }
 
       function weatherCodeToText(code) {
         const map = [
@@ -239,34 +324,34 @@
           { codes: [45, 48], text: "Fog" },
           { codes: [51, 53, 55, 56, 57], text: "Drizzle" },
           { codes: [61, 63, 65, 66, 67], text: "Rain" },
-          { codes: [71, 73, 75, 77], text: "Snow" },
           { codes: [80, 81, 82], text: "Showers" },
           { codes: [95, 96, 99], text: "Thunderstorm" },
         ];
         for (const m of map) if (m.codes.includes(code)) return m.text;
-        return "Weather";
+        return "Partly cloudy";
       }
 
-      function formatWhen(dateObj) {
-        const day = dateObj.toLocaleDateString(undefined, { weekday: "long" });
-        const time = dateObj.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-        return `${day} · ${time}`;
+      function setWeatherUnavailable(msg) {
+        el.city.textContent = "Weather unavailable";
+        el.note.textContent = msg || "Could not load weather. Check internet and press Refresh.";
       }
 
-      function dayShortFromDate(d) {
-        const map = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-        return map[d.getDay()];
+      function setCard(n, disease, confPct, comment) {
+        const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+        setText(`risk${n}Name`, disease);
+        setText(`risk${n}Score`, `${confPct}%`);
+        setText(`risk${n}Note`, comment);
       }
 
-      function setLoading(note) {
-        el.city.textContent = "Getting weather…";
-        el.temp.textContent = "--";
-        el.when.textContent = "--";
-        el.desc.textContent = "--";
-        el.humidity.textContent = "--";
-        el.wind.textContent = "--";
-        el.rain.textContent = "--";
-        el.note.textContent = note || "";
+      function getGpsCoords() {
+        return new Promise((resolve, reject) => {
+          if (!navigator.geolocation) return reject(new Error("Geolocation not supported"));
+          navigator.geolocation.getCurrentPosition(
+            (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: "Near you" }),
+            (err) => reject(err),
+            { enableHighAccuracy: true, timeout: 8000 }
+          );
+        });
       }
 
       async function fetchWeather(lat, lon) {
@@ -282,75 +367,70 @@
         return res.json();
       }
 
-      function getGpsCoords() {
-        return new Promise((resolve, reject) => {
-          if (!navigator.geolocation) return reject(new Error("Geolocation not supported"));
-          navigator.geolocation.getCurrentPosition(
-            (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: "Near you" }),
-            (err) => reject(err),
-            { enableHighAccuracy: true, timeout: 8000 }
-          );
-        });
+      // Store latest context so LLM can answer with current state
+      let latestPredictions = []; // [{disease, confidence_pct, comment}]
+      let latestWeatherPayload = {}; // payload we sent to /predict
+
+      function updateLLMContext(predCards, weatherPayload) {
+        latestPredictions = Array.isArray(predCards) ? predCards : [];
+        latestWeatherPayload = weatherPayload || {};
       }
 
-      function setCard(n, disease, confPct, comment) {
-        const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-        setText(`risk${n}Name`, disease);
-        setText(`risk${n}Score`, `${confPct}%`);
-        setText(`risk${n}Note`, comment);
-      }
+      async function callModelFromWeather(tempC, humidity, windKmh, rainMm, skyText) {
+        const payload = {
+          Temperature_C: Number(tempC),
+          DayOfWeek: dayShortFromDate(new Date()),
+          SkyCondition: skyText || "Partly Cloudy",
+          Humidity_pct: Number(humidity),
+          Wind_kmh: Number(windKmh),
+          Rain_mm: Number(rainMm),
+          top_k: 3
+        };
 
-      async function callModelFromCurrentWeather() {
-        // Read weather already shown in UI
-        const Temperature_C = parseFloat(el.temp.textContent);
-        const Humidity_pct = parseFloat(el.humidity.textContent);
-        const Wind_kmh = parseFloat(el.wind.textContent);
-        const Rain_mm = parseFloat(el.rain.textContent);
+        el.modelStatus.textContent = "Model: predicting…";
 
-        // Use current time (or weather timestamp if available)
-        const DayOfWeek = dayShortFromDate(new Date());
-        const SkyCondition = el.desc.textContent || "Partly Cloudy";
+        try {
+          const res = await fetch(MODEL_API, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(payload)
+          });
 
-        // Basic guard
-        if (!Number.isFinite(Temperature_C) || !Number.isFinite(Humidity_pct) || !Number.isFinite(Wind_kmh) || !Number.isFinite(Rain_mm)) {
-          return;
+          if (!res.ok) {
+            el.modelStatus.textContent = "Model: error calling backend. Is FastAPI running?";
+            console.error("Predict error:", res.status, await res.text());
+            return;
+          }
+
+          const data = await res.json();
+          const cards = data.disease_cards || [];
+
+          if (cards[0]) setCard(1, cards[0].disease, cards[0].confidence_pct, cards[0].comment);
+          if (cards[1]) setCard(2, cards[1].disease, cards[1].confidence_pct, cards[1].comment);
+          if (cards[2]) setCard(3, cards[2].disease, cards[2].confidence_pct, cards[2].comment);
+
+          updateLLMContext(cards, payload);
+
+          el.modelStatus.textContent = "Model: updated ✅";
+        } catch (e) {
+          el.modelStatus.textContent = "Model: failed (network/CORS).";
+          console.error(e);
         }
-
-        const payload = { Temperature_C, DayOfWeek, SkyCondition, Humidity_pct, Wind_kmh, Rain_mm, top_k: 3 };
-
-        const res = await fetch(MODEL_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-          console.error("Model error:", res.status, await res.text());
-          return;
-        }
-
-        const data = await res.json();
-        const cards = data.disease_cards || [];
-
-        // Fill 3 cards if present
-        if (cards[0]) setCard(1, cards[0].disease, cards[0].confidence_pct, cards[0].comment);
-        if (cards[1]) setCard(2, cards[1].disease, cards[1].confidence_pct, cards[1].comment);
-        if (cards[2]) setCard(3, cards[2].disease, cards[2].confidence_pct, cards[2].comment);
       }
 
       async function loadLiveWeather() {
-        setLoading("Requesting GPS permission…");
+        el.note.textContent = "Fetching weather…";
+        el.modelStatus.textContent = "";
 
         let coords = DEFAULT_COORDS;
         try {
           coords = await getGpsCoords();
           el.note.textContent = "Using device GPS.";
         } catch (e) {
-          el.note.textContent = "GPS denied/unavailable — showing default (Dhaka).";
+          el.note.textContent = "GPS denied/unavailable — using default location.";
         }
 
         try {
-          setLoading("Fetching live weather…");
           const data = await fetchWeather(coords.lat, coords.lon);
           const cur = data.current || {};
 
@@ -360,31 +440,130 @@
           const windMs = cur.wind_speed_10m;      // m/s
           const windKmh = (typeof windMs === "number") ? (windMs * 3.6) : null;
 
+          const skyText = weatherCodeToText(cur.weather_code);
+
+          // Update UI
           el.city.textContent = coords.label;
           el.temp.textContent = (tempC ?? "--");
           el.when.textContent = cur.time ? formatWhen(new Date(cur.time)) : "--";
-          el.desc.textContent = weatherCodeToText(cur.weather_code);
+          el.desc.textContent = skyText;
+
           el.humidity.textContent = (rh ?? "--");
           el.wind.textContent = windKmh !== null ? windKmh.toFixed(0) : "--";
           el.rain.textContent = (rainMm ?? "--");
 
           el.note.textContent = `${coords.label} • ${data.timezone || ""}`.trim();
 
-          // ✅ after weather loads, call model and update the 3 cards
-          await callModelFromCurrentWeather();
+          // Call model after weather loads
+          if ([tempC, rh, windKmh, rainMm].every(v => typeof v === "number" && Number.isFinite(v))) {
+            await callModelFromWeather(tempC, rh, windKmh, rainMm, skyText);
+          } else {
+            el.modelStatus.textContent = "Model: skipped (weather values not ready).";
+          }
 
         } catch (e) {
           console.error(e);
-          el.note.textContent = "Could not load weather. Check internet and press Refresh.";
-          el.city.textContent = "Weather unavailable";
+          setWeatherUnavailable("Could not load weather. Check internet and press Refresh.");
+          el.modelStatus.textContent = "Model: not run (weather failed).";
         }
       }
 
       el.refresh?.addEventListener("click", loadLiveWeather);
       window.addEventListener("DOMContentLoaded", loadLiveWeather);
 
-      // Optional: auto-refresh every 30 minutes
-      setInterval(loadLiveWeather, 30 * 60 * 1000);
+      // ===============================
+      // New functionality: LLM Chat (Ollama via backend /explain)
+      // ===============================
+      function appendMsg(role, text) {
+        const wrap = document.createElement("div");
+        wrap.className = "mt-3";
+
+        const bubble = document.createElement("div");
+        bubble.className =
+          role === "user"
+            ? "ml-auto max-w-[85%] rounded-xl bg-emerald-700 px-3 py-2 text-sm text-white shadow"
+            : "mr-auto max-w-[85%] whitespace-pre-wrap rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-800 ring-1 ring-slate-200";
+
+        bubble.textContent = text;
+        wrap.appendChild(bubble);
+        el.chatBox.appendChild(wrap);
+        el.chatBox.scrollTop = el.chatBox.scrollHeight;
+        return bubble;
+      }
+
+      function setLLMPill(ok, text) {
+        el.llmPill.textContent = text;
+        el.llmPill.className = ok
+          ? "rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white"
+          : "rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white";
+      }
+
+      async function askLLM(question) {
+        const q = (question || "").trim();
+        if (!q) return;
+
+        // context from latest predictions
+        const diseases = latestPredictions.map(x => x.disease);
+        const confidences = latestPredictions.map(x => x.confidence_pct);
+
+        appendMsg("user", q);
+        setLLMPill(true, "LLM: thinking…");
+        el.llmStatus.textContent = "Calling /explain…";
+
+        const assistantBubble = appendMsg("assistant", "Thinking…");
+
+        try {
+          const res = await fetch(EXPLAIN_API, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+              question: q,
+              diseases,
+              confidences,
+              weather: latestWeatherPayload,
+              model: "phi3" // change if you want
+            })
+          });
+
+          if (!res.ok) {
+            const errText = await res.text();
+            assistantBubble.textContent = `LLM error: ${errText}`;
+            setLLMPill(false, "LLM: error");
+            el.llmStatus.textContent = "LLM failed. Ensure FastAPI is running + Ollama is running.";
+            return;
+          }
+
+          const data = await res.json();
+          assistantBubble.textContent = data.answer || "No response.";
+          setLLMPill(true, `LLM: ${data.model || "ok"}`);
+          el.llmStatus.textContent = "LLM response received ✅";
+
+        } catch (e) {
+          console.error(e);
+          assistantBubble.textContent =
+            "Cannot reach backend/LLM. Make sure FastAPI is running on :8000 and Ollama is running (ollama serve).";
+          setLLMPill(false, "LLM: offline");
+          el.llmStatus.textContent = "LLM offline.";
+        }
+      }
+
+      el.sendBtn?.addEventListener("click", () => {
+        const q = (el.chatInput.value || "").trim();
+        if (!q) return;
+        el.chatInput.value = "";
+        askLLM(q);
+      });
+
+      el.chatInput?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") el.sendBtn.click();
+      });
+
+      document.querySelectorAll(".quickBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const q = btn.getAttribute("data-q") || "";
+          askLLM(q);
+        });
+      });
     </script>
   </body>
 </html>
