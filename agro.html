@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AgriCare | Expert Consultation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">AgriCare 🌱</h1>
+    <ul class="flex gap-6">
+      <li><a href="#" class="hover:underline">Dashboard</a></li>
+      <li><a href="#" class="hover:underline">Consult Expert</a></li>
+      <li><a href="#" class="hover:underline">Q & A</a></li>
+      <li><a href="#" class="hover:underline">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Section -->
+  <section class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Farmer Problem Upload -->
+    <div class="bg-white shadow-lg rounded-xl p-6">
+      <h2 class="text-lg font-semibold mb-4">📸 Upload Crop Image</h2>
+      <form action="upload_problem.php" method="POST" enctype="multipart/form-data">
+        <label class="block mb-2 text-sm font-medium">Describe the problem</label>
+        <textarea name="problem_desc" class="w-full border rounded-lg p-2 mb-4" rows="3" required></textarea>
+
+        <label class="block mb-2 text-sm font-medium">Upload Image</label>
+        <input type="file" name="crop_image" class="w-full mb-4" required />
+
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+          Send to Expert
+        </button>
+      </form>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col">
+      <h2 class="text-lg font-semibold mb-4">💬 Expert Chat</h2>
+
+      <div id="chatBox" class="flex-1 border rounded-lg p-3 overflow-y-auto mb-4">
+        <!-- Messages via Socket.IO -->
+        <p class="text-sm text-gray-500">Waiting for expert response...</p>
+      </div>
+
+      <div class="flex gap-2">
+        <input id="message" type="text" class="flex-1 border rounded-lg p-2" placeholder="Type your message...">
+        <button onclick="sendMessage()" class="bg-green-600 text-white px-4 rounded-lg">Send</button>
+      </div>
+    </div>
+
+    <!-- Video Consultation -->
+    <div class="bg-white shadow-lg rounded-xl p-6">
+      <h2 class="text-lg font-semibold mb-4">📹 Live Video Consultation</h2>
+
+      <div class="grid grid-cols-1 gap-4">
+        <video id="localVideo" autoplay muted class="w-full h-40 bg-black rounded"></video>
+        <video id="remoteVideo" autoplay class="w-full h-40 bg-black rounded"></video>
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button onclick="startCall()" class="flex-1 bg-green-600 text-white py-2 rounded-lg">Start Call</button>
+        <button onclick="endCall()" class="flex-1 bg-red-600 text-white py-2 rounded-lg">End Call</button>
+      </div>
+
+      <p class="text-xs text-gray-500 mt-2">* Video calling will be handled using Socket Programming + WebRTC</p>
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-green-700 text-white text-center py-4 mt-6">
+    © 2026 AgriCare | Smart Agriculture System
+  </footer>
+
+  <!-- JS (Socket + WebRTC Placeholder) -->
+  <script>
+    function sendMessage() {
+      const msg = document.getElementById('message').value;
+      if (msg.trim() === '') return;
+      // Socket emit message
+      console.log('Message:', msg);
+      document.getElementById('message').value = '';
+    }
+
+    function startCall() {
+      console.log('Start video call');
+      // WebRTC + Socket logic here
+    }
+
+    function endCall() {
+      console.log('End video call');
+    }
+  </script>
+
+</body>
+</html>
